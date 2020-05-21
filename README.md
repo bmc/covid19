@@ -6,6 +6,27 @@ data.
 I've been running these notebooks using the `jupyter/scipy-notebook`
 Docker image.
 
+I run the image as follows:
+
+```shell
+$ docker run -v $HOME:/home/jovyan/$USER -p 127.0.0.1:9999:8888 jupyter/scipy-notebook jupyter notebook --NotebookApp.token= --NotebookApp.password=
+```
+
+You can add `-d` if you want to run it as a daemon, but I just run it under
+`screen` or `tmux`.
+
+That command line:
+
+- Allows me to connect my browser to http://localhost:9999/lab to get to
+  Jupyter.
+- Ensures that Docker _only_ binds to localhost, not to any of the external
+  interfaces.
+- Disables the password and token, so I don't have to type a password or
+  token when I connect my browser to Jupyter.
+- Mounts my entire home directory into the Jupyter image, under
+  `/home/jovyan/bmc` (in my case). Thus, I have full access to my
+  home directory from the Jupyter browser interface.
+
 ## Data Sources
 
 The notebooks currently use data from these data sources:
