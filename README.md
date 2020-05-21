@@ -1,6 +1,11 @@
 This repo contains Jupyter notebooks that I use to play with COVID-19
 data.
 
+## Jupyter setup
+
+I've been running these notebooks using the `jupyter/scipy-notebook`
+Docker image.
+
 ## Data Sources
 
 The notebooks currently use data from these data sources:
