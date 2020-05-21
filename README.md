@@ -12,8 +12,8 @@ Data sources:
 
 ## Data Layout
 
-It assumes the existence of a (not-checked-in) `data` subdirectory.
-Here's the assumed layout:
+They assume the existence of a (not-checked-in) `data` subdirectory.
+Here's the required layout:
 
 ```
 data/
@@ -27,5 +27,7 @@ data/
        +--- COVID-19/
 ```
 
-The `data/johns-hopkins/COVID-19` folder is assumed to be a cloned copy
-of <https://github.com/CSSEGISandData/COVID-19>.
+- The `data/johns-hopkins/COVID-19` folder is assumed to be a cloned copy
+  of <https://github.com/CSSEGISandData/COVID-19>.
+- The CSV file in the `cdc` folder is assumed to be a download from the
+  CDC page referenced above.
