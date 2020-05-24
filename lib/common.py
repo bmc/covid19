@@ -7,12 +7,16 @@ import math
 IMAGES_PATH = 'images'
 
 # suggested line colors and styles for a multi-line plot.
+# xkcd colors, supported by matplotlib, come from here:
+# https://xkcd.com/color/rgb/
 LINE_COLORS_AND_STYLES = (
     ('red', 'solid'),
     ('blue', 'dashed'),
     ('green', 'solid'),
     ('cyan', 'solid'),
     ('orange', 'solid'),
+    ('xkcd:aquamarine', 'dotted'),
+    ('xkcd:taupe', 'solid'),
     ('magenta', 'dashed'),
     ('black', 'solid'),
     ('grey', 'dotted'),
@@ -25,6 +29,7 @@ LINE_COLORS = tuple([c for c, _ in LINE_COLORS_AND_STYLES])
 
 # A list of states to compare.
 STATES_TO_COMPARE = (
+    'Arizona',
     'California',
     'Connecticut',
     'Florida',
@@ -34,6 +39,7 @@ STATES_TO_COMPARE = (
     'New York',
     'Ohio',
     'Pennsylvania',
+    'Texas',
     'Washington',
 )
 
