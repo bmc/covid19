@@ -35,6 +35,7 @@ Data sources:
 
 - [CDC Provisional Death Counts for Coronavirus Disease](https://www.cdc.gov/nchs/nvss/vsrr/covid19/index.htm)
 - [Johns Hopkins University's Center for Systems Science and Engineering (CSSE) COVID-19 data repository](https://github.com/CSSEGISandData/COVID-19)
+- [World Population Review](https://worldpopulationreview.com/states/) (for state population data).
 
 ## Data Layout
 
