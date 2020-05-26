@@ -43,6 +43,65 @@ STATES_TO_COMPARE = (
     'Washington',
 )
 
+# A dict of states and territories, with abbreviations.
+STATES_AND_ABBREVIATIONS = {
+    "Alabama": "AL",
+    "Alaska": "AK",
+    "Arizona": "AZ",
+    "Arkansas": "AR",
+    "California": "CA",
+    "Colorado": "CO",
+    "Connecticut": "CT",
+    "Delaware": "DE",
+    "District of Columbia": "DC",
+    "Florida": "FL",
+    "Georgia": "GA",
+    "Hawaii": "HI",
+    "Idaho": "ID",
+    "Illinois": "IL",
+    "Indiana": "IN",
+    "Iowa": "IA",
+    "Kansas": "KS",
+    "Kentucky": "KY",
+    "Louisiana": "LA",
+    "Maine": "ME",
+    "Maryland": "MD",
+    "Massachusetts": "MA",
+    "Michigan": "MI",
+    "Minnesota": "MN",
+    "Mississippi": "MS",
+    "Missouri": "MO",
+    "Montana": "MT",
+    "Nebraska": "NE",
+    "Nevada": "NV",
+    "New Hampshire": "NH",
+    "New Jersey": "NJ",
+    "New Mexico": "NM",
+    "New York": "NY",
+    "North Carolina": "NC",
+    "North Dakota": "ND",
+    "Ohio": "OH",
+    "Oklahoma": "OK",
+    "Oregon": "OR",
+    "Pennsylvania": "PA",
+    "Rhode Island": "RI",
+    "South Carolina": "SC",
+    "South Dakota": "SD",
+    "Tennessee": "TN",
+    "Texas": "TX",
+    "Utah": "UT",
+    "Vermont": "VT",
+    "Virginia": "VA",
+    "Washington": "WA",
+    "West Virginia": "WV",
+    "Wisconsin": "WI",
+    "Wyoming": "WY",
+    "Puerto Rico": "PR",
+    "American Samoa": "AS",
+    "Virgin Islands": "VI",
+    "Guam": "GU",
+}
+
 assert len(LINE_COLORS) >= len(STATES_TO_COMPARE)
 
 
@@ -120,3 +179,20 @@ def determine_ymax_and_stride(max_value):
         magnitude -= 1
     stride = 5 * (10 ** magnitude)
     return (max_value + stride, stride)
+
+
+def get_per_capita_value(n: int, population: int, per_n=100_000) -> float:
+    """
+    Get the per-million per capita rate, given a value (say,
+    total deaths) and a population figure. 
+    
+    Parameters:
+    
+    n:          the value to scale
+    population: the estimated 2020 population of the entity
+    per_n:      The "per" value (e.g., 1_000_000 for a per-million
+                result).
+    
+    """
+    per_n_factor = per_n / population
+    return n * per_n_factor
