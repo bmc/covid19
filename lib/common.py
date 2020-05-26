@@ -183,8 +183,9 @@ def determine_ymax_and_stride(max_value):
 
 def get_per_capita_value(n: int, population: int, per_n=100_000) -> float:
     """
-    Get the per-million per capita rate, given a value (say,
-    total deaths) and a population figure. 
+    Get the per-N per capita rate, given a value (say, total deaths
+    and a population figure. For instance, passing a per_n value of
+    1_000_000 scales the "n" value to a one-per-million unit.
     
     Parameters:
     
