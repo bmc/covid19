@@ -42,6 +42,8 @@ Data sources:
   Before running the New York Times notebook, the linked GitHub repository must be cloned under `data/nytimes`.
 - [State FIPS codes](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696) from the USDA. Stored in `data/states-fips.csv` and
   checked into this repository.
+- [County FIPS codes](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/home/?cid=nrcs143_013697) from the USDA. Stored in
+  `data/state-county-fips.csv` and checked into this repository.
 - [World Population Review](https://worldpopulationreview.com/states/) (for state population data). Stored in `state-populations.csv` and
   checked into this repository.
 
@@ -54,8 +56,8 @@ via downloading the required files or cloning a GitHub repository.
 ```
 data/
   |-- states-fips.csv (*)
-  |
   |-- state-populations.csv (*)
+  |-- state-county-fips.csv (*)
   |
   +-- cdc/
   |    |
