@@ -3,6 +3,7 @@ Common definitions for all notebooks.
 """
 from datetime import datetime, timedelta, date
 from typing import Dict, Sequence, Tuple, Union
+from dataclasses import dataclass
 import math
 import csv
 
@@ -45,66 +46,14 @@ STATES_TO_COMPARE = (
     'Washington',
 )
 
-# A dict of states and territories, with abbreviations.
-STATES_AND_ABBREVIATIONS = {
-    "Alabama": "AL",
-    "Alaska": "AK",
-    "Arizona": "AZ",
-    "Arkansas": "AR",
-    "California": "CA",
-    "Colorado": "CO",
-    "Connecticut": "CT",
-    "Delaware": "DE",
-    "District of Columbia": "DC",
-    "Florida": "FL",
-    "Georgia": "GA",
-    "Hawaii": "HI",
-    "Idaho": "ID",
-    "Illinois": "IL",
-    "Indiana": "IN",
-    "Iowa": "IA",
-    "Kansas": "KS",
-    "Kentucky": "KY",
-    "Louisiana": "LA",
-    "Maine": "ME",
-    "Maryland": "MD",
-    "Massachusetts": "MA",
-    "Michigan": "MI",
-    "Minnesota": "MN",
-    "Mississippi": "MS",
-    "Missouri": "MO",
-    "Montana": "MT",
-    "Nebraska": "NE",
-    "Nevada": "NV",
-    "New Hampshire": "NH",
-    "New Jersey": "NJ",
-    "New Mexico": "NM",
-    "New York": "NY",
-    "North Carolina": "NC",
-    "North Dakota": "ND",
-    "Ohio": "OH",
-    "Oklahoma": "OK",
-    "Oregon": "OR",
-    "Pennsylvania": "PA",
-    "Rhode Island": "RI",
-    "South Carolina": "SC",
-    "South Dakota": "SD",
-    "Tennessee": "TN",
-    "Texas": "TX",
-    "Utah": "UT",
-    "Vermont": "VT",
-    "Virginia": "VA",
-    "Washington": "WA",
-    "West Virginia": "WV",
-    "Wisconsin": "WI",
-    "Wyoming": "WY",
-    "Puerto Rico": "PR",
-    "American Samoa": "AS",
-    "Virgin Islands": "VI",
-    "Guam": "GU",
-}
-
 assert len(LINE_COLORS) >= len(STATES_TO_COMPARE)
+
+
+@dataclass(frozen=True)
+class StateInfo:
+    state_name: str
+    abbreviation: str
+    fips_code: int
 
 
 def datestr(d: datetime.date, include_year: bool=False) -> str:
@@ -218,4 +167,24 @@ def load_united_states_population_data() -> Dict[str, int]:
 
     populations['United States'] = sum(populations.values())
     return populations
+
+
+def load_state_info() -> Dict[str, StateInfo]:
+    """
+    Loads some information about each US state. Returns
+    a dictionary indexed by full state name; the dictionary
+    values are StateInfo objects, which provide the postal
+    code state abbreviation and the FIPS code.
+    """
+    results = dict()
+    with open('data/states-fips.csv', mode='r') as f:
+        for row in csv.DictReader(f):
+            state = row['State Name']
+            results[state] = StateInfo(
+                state_name=state,
+                abbreviation=row['Abbreviation'],
+                fips_code=int(row['FIPS'])
+            )
+
+    return results
     
