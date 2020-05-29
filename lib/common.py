@@ -55,6 +55,13 @@ class StateInfo:
     abbreviation: str
     fips_code: int
 
+        
+@dataclass(frozen=True)
+class StateCountyInfo:
+    state_name: str # full state name
+    county_name: str
+    fips_code: str
+
 
 def datestr(d: datetime.date, include_year: bool=False) -> str:
     """
@@ -187,4 +194,38 @@ def load_state_info() -> Dict[str, StateInfo]:
             )
 
     return results
+
+
+def load_county_info(state_info=None) -> Dict[str, Dict[str, StateCountyInfo]]:
+    """
+    Load the state county information for all states.
+    Returns a dictionary indexed by state; each value is a
+    dictionary indexed by county name with a StateCountyInfo
+    as the value.
     
+    You can pass, as the first parameter, the results of a
+    prior call to load_state_info(). If you don't do that,
+    this function will call load_state_info() itself.
+    """
+    if state_info is None:
+        state_info = load_state_info()
+
+    # The county info lists states by abbreviation. We want to
+    # map to full name. Build a lookup table.
+    states_by_abbrev = dict()
+    for si in state_info.values():
+        states_by_abbrev[si.abbreviation] = si.state_name
+        
+    results = dict()
+    with open('data/state-county-fips.csv', mode='r', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            state = states_by_abbrev[row['state_abbrev']]
+            state_data = results.get(state, {})
+            county = row['county']
+            state_data[county] = StateCountyInfo(
+                state_name = state,
+                county_name = county,
+                fips_code=csv_int_field(row, 'fips')
+            )
+            results[state] = state_data
+    return results
