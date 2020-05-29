@@ -2,7 +2,9 @@
 Common definitions for all notebooks.
 """
 from datetime import datetime, timedelta, date
+from typing import Dict, Sequence, Tuple, Union
 import math
+import csv
 
 IMAGES_PATH = 'images'
 
@@ -105,12 +107,13 @@ STATES_AND_ABBREVIATIONS = {
 assert len(LINE_COLORS) >= len(STATES_TO_COMPARE)
 
 
-def datestr(d, include_year=False):
+def datestr(d: datetime.date, include_year: bool=False) -> str:
     """
     Format a date in a consistent fashion.
     """
     pat = "%m/%d/%Y" if include_year else "%m/%d"
     return datetime.strftime(d, pat)
+
 
 def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale green'):
     """
@@ -132,7 +135,7 @@ def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale gre
     ax.text(x, y, contents, transform=ax.transAxes, fontsize=fontsize, bbox=props)
     
 
-def csv_int_field(row, key):
+def csv_int_field(row: Dict[str, str], key: str) -> int:
     """
     Get an integer value from a csv.DictReader row. If the value
     is empty or not there, return 0.
@@ -148,7 +151,7 @@ def csv_int_field(row, key):
     return int(s)
 
 
-def csv_float_field(row, key):
+def csv_float_field(row: Dict[str, str], key: str) -> float:
     """
     Get a float value from a csv.DictReader row. If the value
     is empty or not there, return 0.0.
@@ -164,7 +167,7 @@ def csv_float_field(row, key):
     return float(s)
 
 
-def determine_ymax_and_stride(max_value):
+def determine_ymax_and_stride(max_value: Union[int, float]) -> Tuple[int, int]:
     """
     Given a maximum value to be plotted on the Y axis, use a simple
     heuristic to determine (a) the upper bound to be shown (i.e.,
@@ -197,3 +200,22 @@ def get_per_capita_value(n: int, population: int, per_n=100_000) -> float:
     """
     per_n_factor = per_n / population
     return n * per_n_factor
+
+
+def load_united_states_population_data() -> Dict[str, int]:
+    """
+    Load state population data. Returns a dict indexed by (full) state name,
+    with the estimated population as the integer value. The summed up figure,
+    for the United States as a whole, is available under key "United States".
+    """
+    populations = dict()
+    with open('data/state-populations.csv', mode='r', encoding='utf-8') as f:
+        r = csv.DictReader(f)
+        for row in r:
+            state = row['State']
+            population = int(row['Pop'])
+            populations[state] = population
+
+    populations['United States'] = sum(populations.values())
+    return populations
+    
