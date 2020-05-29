@@ -35,15 +35,21 @@ Data sources:
 
 - [CDC Provisional Death Counts for Coronavirus Disease](https://www.cdc.gov/nchs/nvss/vsrr/covid19/index.htm)
 - [Johns Hopkins University's Center for Systems Science and Engineering (CSSE) COVID-19 data repository](https://github.com/CSSEGISandData/COVID-19)
-- [World Population Review](https://worldpopulationreview.com/states/) (for state population data).
+- [Data from The New York Times, based on reports from state and local health agencies](https://github.com/nytimes/covid-19-data)
+- [State FIPS codes](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696) from the USDA. Stored in `data/states-fips.csv`.
+- [World Population Review](https://worldpopulationreview.com/states/) (for state population data). Stored in `state-populations.csv`
 
 ## Data Layout
 
-They assume the existence of a (not-checked-in) `data` subdirectory.
-Here's the required layout:
+They assume the existence of a `data` subdirectory. Items marked with an
+asterisk (`*`) are checked into this repo. Others must be created, either
+via downloading the required files or cloning a GitHub repository.
 
 ```
 data/
+  |-- states-fips.csv (*)
+  |
+  |-- state-populations.csv (*)
   |
   +-- cdc/
   |    |
