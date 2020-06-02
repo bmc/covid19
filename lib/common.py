@@ -6,6 +6,7 @@ from typing import Dict, Sequence, Tuple, Union
 from dataclasses import dataclass
 import math
 import csv
+from enum import Enum
 
 IMAGES_PATH = 'images'
 
@@ -47,6 +48,12 @@ STATES_TO_COMPARE = (
 )
 
 assert len(LINE_COLORS) >= len(STATES_TO_COMPARE)
+
+
+class MetricType(Enum):
+    DEATHS = 'deaths'
+    CASES = 'cases'
+    RECOVERIES = 'recoveries'
 
 
 @dataclass(frozen=True)
