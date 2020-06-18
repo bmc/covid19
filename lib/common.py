@@ -51,9 +51,15 @@ assert len(LINE_COLORS) >= len(STATES_TO_COMPARE)
 
 
 class MetricType(Enum):
+    """
+    The type of metric to plot. Not all metrics are supported by
+    all data sets.
+    """
     DEATHS = 'deaths'
     CASES = 'cases'
     RECOVERIES = 'recoveries'
+    HOSPITALIZATIONS = 'hospitalizations'
+    TESTED = 'tested'
 
 
 @dataclass(frozen=True)
@@ -83,6 +89,8 @@ def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale gre
     Place text in a box on a plot.
     
     Note on coordinates: (0, 0) is lower left. (1, 1) is upper right. Floats are allowed.
+    The coordinates refer to the upper left corner of the text box. A good starting pair
+    is (0.01, 0.98)
     
     Parameters:
     
@@ -95,7 +103,7 @@ def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale gre
     bg        - The background color. Defaults to pale green.    
     """
     props = {'boxstyle': boxstyle, 'facecolor': bg, 'alpha': 0.3}
-    ax.text(x, y, contents, transform=ax.transAxes, fontsize=fontsize, bbox=props)
+    ax.text(x, y, contents, transform=ax.transAxes, fontsize=fontsize, bbox=props, va='top', ha='left')
     
 
 def csv_int_field(row: Dict[str, str], key: str) -> int:
