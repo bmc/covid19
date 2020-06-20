@@ -155,7 +155,7 @@ def determine_ymax_and_stride(max_value: Union[int, float]) -> Tuple[int, int]:
     return (max_value + stride, stride)
 
 
-def get_per_capita_value(n: int, population: int, per_n=100_000) -> float:
+def get_per_capita_value(n: int, population: int, per_n: int=100_000) -> float:
     """
     Get the per-N per capita rate, given a value (say, total deaths
     and a population figure. For instance, passing a per_n value of
@@ -168,9 +168,27 @@ def get_per_capita_value(n: int, population: int, per_n=100_000) -> float:
     per_n:      The "per" value (e.g., 1_000_000 for a per-million
                 result).
     
+    Returns: the per-capita value, as a float
     """
     per_n_factor = per_n / population
     return n * per_n_factor
+
+def get_per_capita_int(n: int, population: int, per_n: int=100_000) -> int:
+    """
+    Get the per-N per capita rate, given a value (say, total deaths
+    and a population figure. For instance, passing a per_n value of
+    1_000_000 scales the "n" value to a one-per-million unit.
+    
+    Parameters:
+    
+    n:          the value to scale
+    population: the estimated 2020 population of the entity
+    per_n:      The "per" value (e.g., 1_000_000 for a per-million
+                result). 
+                
+    Returns: the per-capita value, rounded up to the nearest integer
+    """
+    return int(round(get_per_capita_value(n, population, per_n)))
 
 
 def load_united_states_population_data() -> Dict[str, int]:
