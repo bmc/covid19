@@ -47,6 +47,10 @@ Data sources:
 - [World Population Review](https://worldpopulationreview.com/states/) (for state population data). Stored in `state-populations.csv` and
   checked into this repository.
 
+Run `./update.sh` to clone and update the Johns Hopkins and New York Times
+data sources. It will create them if they don't exist and update them if they
+do.
+
 ## Data Layout
 
 They assume the existence of a `data` subdirectory. Items marked with an
@@ -64,8 +68,12 @@ data/
   |    +--- Provisional_COVID-19_Death_Counts_by_Week_Ending_Date_and_State.csv
   |
   +-- johns-hopkins/
+  |    |
+  |    +--- COVID-19/
+  |
+  +-- nytimes/
        |
-       +--- COVID-19/
+       +--- covid-19-data
 ```
 
 - The `data/johns-hopkins/COVID-19` folder is assumed to be a cloned copy
