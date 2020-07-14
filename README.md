@@ -77,6 +77,10 @@ data/
 ```
 
 - The `data/johns-hopkins/COVID-19` folder is assumed to be a cloned copy
-  of <https://github.com/CSSEGISandData/COVID-19>.
+  of Johns Hopkins repo listed above.
+- The `data/nytimes/covid-19-data` folder is assumed to be a cloned copy
+  of New York Times repo listed above.
 - The CSV file in the `cdc` folder is assumed to be a download from the
   CDC page referenced above.
+
+`upload.sh` will ensure the existence of the first two.
