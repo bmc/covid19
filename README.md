@@ -53,9 +53,9 @@ do.
 
 ## Data Layout
 
-They assume the existence of a `data` subdirectory. Items marked with an
-asterisk (`*`) are checked into this repo. Others must be created, either
-via downloading the required files or cloning a GitHub repository.
+The notebooks assume the existence of a `data` subdirectory. Items marked
+with an asterisk (`*`) are checked into this repo. Others must be created,
+either via downloading the required files or cloning a GitHub repository.
 
 ```
 data/
