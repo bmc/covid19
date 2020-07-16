@@ -1,5 +1,16 @@
-This repo contains Jupyter notebooks that I use to play with COVID-19
-data.
+# COVID-19 notebooks
+
+This repo contains Jupyter notebooks that I use to analyze some COVID-19
+data. You're welcome to play with these notebooks, adapt them, copy them,
+etc. This repo is just a playground allowing me to experiment with the data,
+as well as  bone up on Jupyter and `matplotlib`. What you see is what you get.
+
+The notebooks in this repository are released under a
+[Creative Commons Attribution-NonCommercial-ShareAlike](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+(CC BY-NC-SA) license.
+
+This license does _not_ apply to any of the data, including the data that
+is cached in this repository.
 
 ## Jupyter setup
 
