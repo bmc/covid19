@@ -5,6 +5,11 @@ data. You're welcome to play with these notebooks, adapt them, copy them,
 etc. This repo is just a playground allowing me to experiment with the data,
 as well as  bone up on Jupyter and `matplotlib`. What you see is what you get.
 
+I generally check the notebooks into Git _with_ the results intact.
+That means you can browse to a notebook in GitHub, and it should render
+the notebook and its results. (GitHub can render Jupyter notebooks for
+display only.)
+
 The notebooks in this repository are released under a
 [Creative Commons Attribution-NonCommercial-ShareAlike](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 (CC BY-NC-SA) license.
