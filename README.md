@@ -66,7 +66,7 @@ do.
 
 The notebooks assume the existence of a `data` subdirectory. Items marked
 with an asterisk (`*`) are checked into this repo. Others must be created,
-either via downloading the required files or cloning a GitHub repository.
+either via downloading the required files or cloning some GitHub repositories.
 
 ```
 data/
@@ -94,4 +94,5 @@ data/
 - The CSV file in the `cdc` folder is assumed to be a download from the
   CDC page referenced above.
 
-`upload.sh` will ensure the existence of the first two.
+`upload-data.sh` will ensure the existence of the Johns Hopkins and New
+York Times data.
