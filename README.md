@@ -58,7 +58,7 @@ Data sources:
 - [World Population Review](https://worldpopulationreview.com/states/) (for state population data). Stored in `state-populations.csv` and
   checked into this repository.
 
-Run `./update.sh` to clone and update the Johns Hopkins and New York Times
+Run `./update-data.sh` to clone and update the Johns Hopkins and New York Times
 data sources. It will create them if they don't exist and update them if they
 do.
 
