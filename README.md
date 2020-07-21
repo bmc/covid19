@@ -67,14 +67,17 @@ Data sources:
 
 ### Getting the Data
 
-#### Johns Hopkins and New York Times data
+#### Johns Hopkins, New York Times, and CDC data
 
-To get the Johns Hopkins and New York Times data, you can either run
+To get the Johns Hopkins, New York Times, and CDC data, you can either run
 `./update-data.sh` from a shell, or you can run the `update-data.ipynb`
 notebook within Jupyter (which just runs `./update-data.sh`).
 
-Either way, the update process with clone the Johns Hopkins and New York Times
-GitHub repos if they don't exist, and update them if they already do exist.
+Either way, the update process:
+
+- clones the Johns Hopkins and New York Times GitHub repos, if they don't
+  exist already; or updates them, if they do
+- downloads the latest CDC data (as CSV) from the CDC web site.
 
 
 #### CDC data
@@ -116,5 +119,5 @@ data/
 - The CSV file in the `cdc` folder is assumed to be a download from the
   CDC page referenced above.
 
-`upload-data.sh` will ensure the existence of the Johns Hopkins and New
-York Times data.
+See the previous section for instructions on obtaining the Johns Hopkins,
+New York Times, and CDC data.
