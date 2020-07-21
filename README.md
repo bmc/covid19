@@ -73,9 +73,9 @@ To get the Johns Hopkins and New York Times data, you can either run
 `./update-data.sh` from a shell, or you can run the `update-data.ipynb`
 notebook within Jupyter (which just runs `./update-data.sh`).
 
-Run `./update-data.sh` to clone and update the Johns Hopkins and New York Times
-data sources. It will create them if they don't exist and update them if they
-do.
+Either way, the update process with clone the Johns Hopkins and New York Times
+GitHub repos if they don't exist, and update them if they already do exist.
+
 
 #### CDC data
 
