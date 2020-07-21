@@ -2,11 +2,13 @@
 
 JHU_REPO_NAME="COVID-19"
 JHU_REPO="CSSEGISandData/$JHU_REPO_NAME"
-JHU_GH_REPO="git@github.com:$JHU_REPO.git"
+#JHU_GH_REPO="git@github.com:$JHU_REPO.git"
+JHU_GH_REPO="https://github.com/$JHU_REPO.git"
 
 NYT_REPO_NAME="covid-19-data"
 NYT_REPO="nytimes/$NYT_REPO_NAME"
-NYT_GH_REPO="git@github.com:$NYT_REPO.git"
+#NYT_GH_REPO="git@github.com:$NYT_REPO.git"
+NYT_GH_REPO="https://github.com/$NYT_REPO.git"
 
 JHU="data/johns-hopkins/$JHU_REPO_NAME"
 NYT="data/nytimes/$NYT_REPO_NAME"

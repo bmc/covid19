@@ -43,7 +43,9 @@ That command line:
   `/home/jovyan/bmc` (in my case). Thus, I have full access to my
   home directory from the Jupyter browser interface.
 
-## Data Sources
+## Data
+
+### Data Sources
 
 The notebooks currently use data from these data sources:
 
@@ -63,11 +65,26 @@ Data sources:
 - [World Population Review](https://worldpopulationreview.com/states/) (for state population data). Stored in `state-populations.csv` and
   checked into this repository.
 
+### Getting the Data
+
+#### Johns Hopkins and New York Times data
+
+To get the Johns Hopkins and New York Times data, you can either run
+`./update-data.sh` from a shell, or you can run the `update-data.ipynb`
+notebook within Jupyter (which just runs `./update-data.sh`).
+
 Run `./update-data.sh` to clone and update the Johns Hopkins and New York Times
 data sources. It will create them if they don't exist and update them if they
 do.
 
-## Data Layout
+#### CDC data
+
+If you're going to run the `cdc.ipynb` notebook, you have to download the CDC
+data manually. Go to the CDC page listed above, download the data as a CSV
+file, and copy that file to
+`data/cdc/Provisional_COVID-19_Death_Counts_by_Week_Ending_Date_and_State.csv`.
+
+### Data Layout
 
 The notebooks assume the existence of a `data` subdirectory. Items marked
 with an asterisk (`*`) are checked into this repo. Others must be created,
