@@ -135,3 +135,12 @@ data/
 
 See the previous section for instructions on obtaining the Johns Hopkins,
 New York Times, and CDC data.
+
+## Graphs
+
+The various notebooks use `matplotlib` to graph COVID-19 data. In most cases,
+the code also saves each graph in a PNG file in an `images` subdirectory.
+`images` is not checked in; the notebooks create the directory if it does not
+exist.
+
+Saving the graphs as images makes them easy to share.
