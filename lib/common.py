@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import math
 import csv
 from enum import Enum
+import re
 
 IMAGES_PATH = 'images'
 
@@ -107,6 +108,29 @@ def datestr(d: datetime.date, include_year: bool=False) -> str:
     """
     pat = "%m/%d/%Y" if include_year else "%m/%d"
     return datetime.strftime(d, pat)
+
+
+def fix_pandas_multiplot_legend(ax, legend_loc):
+    """
+    When plotting multiple pieces of data, the Pandas-generated
+    plot legend will often look like "(metric, place)" (e.g.,
+    "(Deaths, Connecticut)".
+    
+    This function corrects the legend, by extracting just the place.
+    
+    Parameters:
+    
+    ax         - the plot axis
+    legend_loc - the desired location for the legend
+    """
+    patches, labels = ax.get_legend_handles_labels()
+    pat = re.compile(r'^\([^,\s]+,\s+(.*)\)$')
+    labels2 = []
+    for label in labels:
+        m = pat.match(label)
+        assert m is not None
+        labels2.append(m.group(1))
+    ax.legend(patches, labels2, loc=legend_loc)
 
 
 def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale green'):
