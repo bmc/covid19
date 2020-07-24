@@ -61,6 +61,21 @@ class MetricType(Enum):
     HOSPITALIZATIONS = 'hospitalizations'
     TESTED = 'tested'
 
+METRIC_LABELS = {
+    MetricType.DEATHS: 'Deaths',
+    MetricType.CASES: 'Cases',
+    MetricType.RECOVERIES: 'Recoveries',
+    MetricType.HOSPITALIZATIONS: 'Hospitalizations',
+    MetricType.TESTED: 'Tested',        
+}
+
+METRIC_COLORS = {
+    MetricType.DEATHS: 'red',
+    MetricType.CASES: 'blue',
+    MetricType.RECOVERIES: 'cyan',
+    MetricType.HOSPITALIZATIONS: 'green',
+    MetricType.TESTED: 'black',        
+}
 
 @dataclass(frozen=True)
 class StateInfo:
