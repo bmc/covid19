@@ -76,6 +76,16 @@ class StateCountyInfo:
     fips_code: str
 
 
+def date_to_datetime(date, hour=0, minute=0, second=0):
+    """
+    Converts a Python date object to a datetime object,
+    adding the specified hour, minute, and second.
+    """
+    from datetime import datetime
+    return datetime(year=date.year, month=date.month, day=date.day,
+                    hour=hour, minute=minute, second=second)
+
+
 def datestr(d: datetime.date, include_year: bool=False) -> str:
     """
     Format a date in a consistent fashion.
@@ -155,7 +165,7 @@ def determine_ymax_and_stride(max_value: Union[int, float]) -> Tuple[int, int]:
     return (max_value + stride, stride)
 
 
-def get_per_capita_value(n: int, population: int, per_n: int=100_000) -> float:
+def get_per_capita_float(n: int, population: int, per_n: int=100_000) -> float:
     """
     Get the per-N per capita rate, given a value (say, total deaths
     and a population figure. For instance, passing a per_n value of
@@ -188,7 +198,7 @@ def get_per_capita_int(n: int, population: int, per_n: int=100_000) -> int:
                 
     Returns: the per-capita value, rounded up to the nearest integer
     """
-    return int(round(get_per_capita_value(n, population, per_n)))
+    return int(round(get_per_capita_float(n, population, per_n)))
 
 
 def load_united_states_population_data() -> Dict[str, int]:
