@@ -1,21 +1,54 @@
 # COVID-19 notebooks
 
-This repo contains Jupyter notebooks that I use to analyze some COVID-19
-data. You're welcome to play with these notebooks, adapt them, copy them,
-etc. This repo is just a playground allowing me to experiment with the data,
-as well as  bone up on Jupyter and `matplotlib`. What you see is what you get.
+This repo contains [Jupyter](https://jupyter.org/) notebooks that I use to
+analyze some COVID-19 data. You're welcome to play with these notebooks, adapt 
+them, copy them, etc. 
+
+This repo is main just a playground allowing me to experiment with the data,
+as well as  bone up on Jupyter, [`matplotlib`](https://matplotlib.org/), and
+[Pandas]((https://pandas.pydata.org/)). What you see is what you get.
 
 I generally check the notebooks into Git _with_ the results intact.
 That means you can browse to a notebook in GitHub, and it should render
 the notebook and its results. (GitHub can render Jupyter notebooks for
 display only.)
 
-The notebooks in this repository are released under a
+## The code
+
+### Notebooks
+
+- `cdc.ipynb`: Notebook that analyzes data from the Centers for Disease
+  Control and Prevention
+- `johns-hopkins.ipynb`: Notebook that analyzes data from the Johns Hopkins
+  University's Center for Systems Science and Engineering (CSSE)
+- `nytimes.ipynb`: Notebook that analyzes data from the New York Times
+- `update-data.ipynb`: Notebook that can be used to download updated data.
+  See below for details.
+
+### Other code
+
+- `lib/common.py`: Some common Python code shared between the notebooks and
+  imported into each.
+
+## License
+
+
+The notebooks and code in this repository are released under a
 [Creative Commons Attribution-NonCommercial-ShareAlike](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 (CC BY-NC-SA) license.
 
 This license does _not_ apply to any of the data, including the data that
 is cached in this repository.
+
+## A note about the generated graphs
+
+The various notebooks use Pandas and `matplotlib` to graph COVID-19 data. 
+In most cases, the code also saves each graph in a PNG file in an `images` 
+subdirectory. `images` is not checked in; the notebooks create the directory
+if it does not exist.
+
+Saving the graphs as images makes them easy to share.
+
 
 ## Jupyter setup
 
@@ -136,11 +169,3 @@ data/
 See the previous section for instructions on obtaining the Johns Hopkins,
 New York Times, and CDC data.
 
-## Graphs
-
-The various notebooks use `matplotlib` to graph COVID-19 data. In most cases,
-the code also saves each graph in a PNG file in an `images` subdirectory.
-`images` is not checked in; the notebooks create the directory if it does not
-exist.
-
-Saving the graphs as images makes them easy to share.
