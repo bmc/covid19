@@ -135,6 +135,7 @@ def fix_pandas_multiplot_legend(ax, legend_loc):
 
 
 def plot_stats_by_date(df, 
+                       source,
                        metrics={MetricType.DEATHS}, 
                        region='United States',
                        moving_average=False,
@@ -155,6 +156,7 @@ def plot_stats_by_date(df,
     Parameters:
     
     df              - The Pandas DataFrame to plot
+    source          - Description of data source
     metrics         - A set containing the metrics to plot. Defaults to deaths.
     region          - The state name, or 'United States' for everything
     moving_average  - If True, plot a 7-day moving average along side the data. If
@@ -303,9 +305,7 @@ def plot_stats_by_date(df,
 
     ax.legend(loc=legend_loc)
 
-    x_label = """Week
-
-(Source: Johns Hopkins University Center for Systems Science and Engineering)"""
+    x_label = f"Week\n\n(Source: {source})"
     ax.set_xlabel(x_label)
 
     y_label = ', '.join(METRIC_LABELS[m] for m in metrics)
@@ -333,18 +333,164 @@ def plot_stats_by_date(df,
     return None
 
 
-def plot_state(df, region, image_file, metrics, moving_average=False, legend_loc=None):
+def plot_state(df, source, region, image_file, metrics, moving_average=False, legend_loc=None):
     """
     Convenience front-end to plot_stats_by_date() that puts a heading for the state
     in the textbox.
     """
-    return plot_stats_by_date(df, 
+    return plot_stats_by_date(df, source,
                               region=region,
                               textbox_heading=region, 
                               image_file=image_file, 
                               metrics=metrics,
                               moving_average=moving_average,
                               legend_loc=legend_loc)
+
+
+def plot_states(df, source, states, metric=MetricType.DEATHS, per_n=1,
+                populations=None, textbox_heading=None, textbox_loc=None, 
+                figsize=(20, 12), legend_loc="lower right", image_file=None):
+    """
+    Takes a Pandas DataFrame with the normalized data, and plots a particular
+    metric once for each of a group of states, across all the dates in the
+    DataFrame.
+    
+    Parameters:
+    
+    df              - The Pandas DataFrame from which to select the data.
+    source          - Description of data source
+    states          - The names of the states.
+    metric          - The metric to plot. Defaults to deaths.
+    per_n           - If set to 1, plot the data as is. Otherwise, do a per-capita
+                      plot (i.e., number of X per n people). If per_n is not 1,
+                      then population must be defined.
+    populations     - The dictionary of populations per state. Only necessary
+                      if per_n is greater than 1.
+    figsize         - The size of the plot.
+    textbox_heading - An optional heading to add to the textbox annotation
+    textbox_loc     - An (x, y) tuple for the location of the text box's top
+                      left corner. Defaults to the upper left.
+    legend_loc      - Location of the legend, using matplotlib semantics. Defaults
+                      to "lower right"
+    image_file      - Name of image file in which to save plot, or None.
+    """
+    # Get a derived DataFrame with just the states passed in.
+    # Also, we only care about the Province_State, Month_Day
+    # and particular statistic column. Finally, ensure that the
+    # resulting DataFrame is sorted by date, just in case the 
+    # original was reordered.
+    metric_col = METRIC_COLUMNS[metric]
+    df2 = (df.loc[df[COL_REGION].isin(states)][[COL_REGION, COL_MONTH_DAY, metric_col]]
+             .sort_values(by=[COL_MONTH_DAY], inplace=False))
+    if per_n > 1:
+        func = lambda r: get_per_capita_float(r[metric_col], populations[r[COL_REGION]])
+        df2[metric_col] = df2.apply(func, axis=1)
+
+    # GROUP BY, SUM. Hello, SQL folks...
+    group = df2.groupby([COL_MONTH_DAY, COL_REGION]).sum()
+    
+    # Unstack, to get each state's numbers in a separate column.
+    final_df = group.unstack()
+
+    fig, ax = p.subplots(figsize=figsize)
+
+    # Let Pandas plot the whole thing.
+    final_df.plot(ax=ax, kind='line', legend=True)
+    fix_pandas_multiplot_legend(ax, legend_loc)
+
+    # Set the X and Y axis labels. Add the credit below the X label,
+    # since it's a nice place to stash it without interfering with
+    # the plot.
+    xlabel = (f"Week\n\n(Source: {source})")
+    ax.set_xlabel(xlabel)
+    metric_label = METRIC_LABELS[metric]
+    label = metric_label if per_n == 1 else f"{metric_label} per {per_n:,} people"
+    ax.set_ylabel(label)
+
+    # Add an explanatory text box.
+    text_x, text_y = textbox_loc or (0.01, 0.987)
+    heading = "" if textbox_heading is None else f"{textbox_heading}: "
+    text_lines = [f"{heading}{label}\n"]
+    for state in sorted(states):
+        # Get the last value for the metric. It's the grand total.
+        total = round(int(df2.loc[df2[COL_REGION] == state][metric_col].iloc[-1]))
+        text_lines.append(f"{state}: {total:,}")
+    textbox(ax, text_x, text_y, '\n'.join(text_lines))
+    
+    if image_file is not None:
+        fig.savefig(os.path.join(IMAGES_PATH, image_file))
+
+
+def plot_states_per_capita(df, source, populations, metric=MetricType.DEATHS,
+                           figsize=(25, 12), show_us_per_capita=True,
+                           per_n=1_000_000, image_file=None):
+    """
+    Plot a per-capita bar chart comparing all states, for a particular
+    metric.
+    
+    Parameters:
+    
+    df                 - The Pandas DataFrame with the data.
+    source             - Description of data source
+    populations        - The loaded dictionary of populations.
+    metric             - The metric to graph. Defaults to MetricType.DEATHS
+    figsize            - The graph size. Defaults to 25x12
+    show_us_per_capita - If True, show a line for the overall US per
+                         capita value.
+    per_n              - The per-capita factor. Must be 1,000 or larger.
+    image_file         - Where to save the image, or None.
+    """
+    fig, ax = p.subplots(figsize=figsize)
+    metric_col = METRIC_COLUMNS[metric]
+    color = METRIC_COLORS[metric]
+    label = METRIC_LABELS[metric]
+
+    assert per_n >= 1_000
+    
+    states = set(populations.keys()) - {'United States'}
+    df_states = df.loc[df[COL_REGION].isin(states)].sort_values(by=[COL_DATE], inplace=False)
+    
+    us_total = df_states[[COL_REGION, metric_col]].groupby([COL_REGION]).max().sum()
+    us_per_capita = get_per_capita_int(us_total, populations['United States'], per_n=per_n)
+
+    df_states['per_capita'] = df_states.apply(
+        lambda r: get_per_capita_float(r[metric_col], populations[r[COL_REGION]], per_n=per_n),
+        axis=1
+    )
+
+    df_grouped = df_states[[COL_REGION, 'per_capita']].groupby([COL_REGION]).max()
+
+    # We're using zorder here to ensure that the horizontal line showing the
+    # US per capita value shows up behind the bars.
+    df_grouped.plot.bar(ax=ax, color=color, zorder=2, legend=False)
+    if show_us_per_capita:
+        ax.axhline(us_per_capita, color="lightgray", zorder=1)
+        ax.set_yticks(ax.get_yticks() + [us_per_capita])
+
+    # Set the X and Y axis labels. Add the credit below the X label,
+    # since it's a nice place to stash it without interfering with
+    # the plot.
+    xlabel = (f"State\n\n(Source: {source})")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(f"{label} for {per_n:,} people")
+
+    # See https://stackoverflow.com/a/25449186
+    # (specifically, the first comment.)
+    for patch in ax.patches:
+        val = f"{round(int(patch.get_height())):,}"
+        x = patch.get_x() + (patch.get_width() / 2)
+        y = patch.get_height()
+        ax.annotate(val, (x, y), ha='center', va='center', xytext=(0, 10), 
+                    textcoords='offset points', zorder=2)
+
+    if show_us_per_capita:
+        text = f"U.S. {label} per {per_n:,} people: {us_per_capita:,}"
+        textbox(ax, 0.01, 0.98, text)
+
+    if image_file is not None:
+        fig.savefig(os.path.join(IMAGES_PATH, image_file))
+
+    return (fig, ax)
 
 
 def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale green'):
