@@ -1,5 +1,6 @@
 """
-Common definitions for all notebooks.
+Share library of constants and functions that
+can be used across notebooks.
 """
 import matplotlib.pyplot as p
 import numpy as np
