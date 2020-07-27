@@ -351,7 +351,7 @@ def plot_stats_by_date(df,
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
 
-    return None
+    return (fig, ax)
 
 
 def plot_state(df, source, region, metrics, image_file=None,
@@ -442,6 +442,8 @@ def plot_states(df, source, states, metric=MetricType.DEATHS, per_n=1,
     
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
+        
+    return (fig, ax)
 
 
 def plot_states_per_capita(df, source, populations, metric=MetricType.DEATHS,
