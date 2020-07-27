@@ -354,8 +354,8 @@ def plot_stats_by_date(df,
     return None
 
 
-def plot_state(df, source, region, image_file, metrics, moving_average=False, legend_loc=None,
-               textbox_loc=None):
+def plot_state(df, source, region, metrics, image_file=None,
+               moving_average=False, legend_loc=None, textbox_loc=None):
     """
     Convenience front-end to plot_stats_by_date() that puts a heading for the state
     in the textbox.
