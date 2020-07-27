@@ -115,14 +115,6 @@ Either way, the update process:
   exist already; or updates them, if they do
 - downloads the latest CDC data (as CSV) from the CDC web site.
 
-
-#### CDC data
-
-If you're going to run the `cdc.ipynb` notebook, you have to download the CDC
-data manually. Go to the CDC page listed above, download the data as a CSV
-file, and copy that file to
-`data/cdc/Provisional_COVID-19_Death_Counts_by_Week_Ending_Date_and_State.csv`.
-
 ### Data Layout
 
 The notebooks assume the existence of a `data` subdirectory. Items marked
