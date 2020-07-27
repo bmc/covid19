@@ -56,6 +56,7 @@ Saving the graphs as images makes them easy to share.
 ## Jupyter setup
 
 I've been running these notebooks using the `jupyter/scipy-notebook` Docker
+image.
 
 I run the image as follows:
 
