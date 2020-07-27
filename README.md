@@ -6,7 +6,7 @@ them, copy them, etc.
 
 This repo is main just a playground allowing me to experiment with the data,
 as well as  bone up on Jupyter, [`matplotlib`](https://matplotlib.org/), and
-[Pandas]((https://pandas.pydata.org/)). 
+[Pandas](https://pandas.pydata.org/). 
 
 I will not claim to be a Pandas or `matplotlib` expert. What you see is what
 you get. (I also welcome suggestions for improvement.)
