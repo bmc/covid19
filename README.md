@@ -55,27 +55,12 @@ Saving the graphs as images makes them easy to share.
 
 ## Jupyter setup
 
-I've been running these notebooks using my own `bclapper/jupyter-scipy-plus`
-Docker image. This image is a child of the stock `jupyter/scipy-notebook`
-Docker image, but it prebuilds the following Jupyter extensions (so I don't
-have to build and install them every time I fire up a new Docker image):
-
-- [jupyter-lab-go-to-definition](https://github.com/krassowski/jupyterlab-go-to-definition)
-- [jupyterlab-python-file](https://github.com/jtpio/jupyterlab-python-file)
-
-`bclapper/jupyter-scipy-plus` is pushed to DockerHub, so you can just fire it
-up (or pull it down, whatever). If you want to see how it's been built, go
-[here](https://github.com/bmc/docker/tree/master/jupyter-scipy-plus) and
-take a look at `Dockerfile`.
-
-If you don't need these extra extensions, feel free to run the base 
-`jupyter/scipy-notebook` Docker image. The notebooks will work fine with
-either image.
+I've been running these notebooks using the `jupyter/scipy-notebook` Docker
 
 I run the image as follows:
 
 ```shell
-$ docker run -v $HOME:/home/jovyan/$USER -p 127.0.0.1:9999:8888 bclapper/jupyter-scipy-plus jupyter notebook --NotebookApp.token= --NotebookApp.password=
+$ docker run -v $HOME:/home/jovyan/$USER -p 127.0.0.1:9999:8888 jupyter/scipy-notebook jupyter notebook --NotebookApp.token= --NotebookApp.password=
 ```
 
 You can add `-d` if you want to run it as a daemon, but I just run it under
