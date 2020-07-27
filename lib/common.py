@@ -28,6 +28,7 @@ COL_CASES            = 'cases'
 COL_TESTS            = 'tests'
 COL_HOSPITALIZATIONS = 'hospitalizations'
 COL_RECOVERIES       = 'recoveries'
+COL_POSITIVITY       = 'positivity_rate'
 
 
 class MetricType(Enum):
@@ -40,13 +41,15 @@ class MetricType(Enum):
     RECOVERIES = 'recoveries'
     HOSPITALIZATIONS = 'hospitalizations'
     TESTED = 'tested'
+    POSITIVITY = 'positivity' # calculated on the fly
 
 METRIC_LABELS = {
     MetricType.DEATHS: 'Deaths',
     MetricType.CASES: 'Cases',
     MetricType.RECOVERIES: 'Recoveries',
     MetricType.HOSPITALIZATIONS: 'Hospitalizations',
-    MetricType.TESTED: 'Tested',        
+    MetricType.TESTED: 'Tested',
+    MetricType.POSITIVITY: 'Positivity Rate',
 }
 
 METRIC_COLUMNS = {
@@ -55,14 +58,18 @@ METRIC_COLUMNS = {
     MetricType.RECOVERIES: COL_RECOVERIES,
     MetricType.HOSPITALIZATIONS: COL_HOSPITALIZATIONS,
     MetricType.TESTED: COL_TESTS,
+    MetricType.POSITIVITY: COL_POSITIVITY,
 }
 
+# Note: XKCD colors are listed at https://xkcd.com/color/rgb/
+# Prefix them with "xkcd:" to use in plotting.
 METRIC_COLORS = {
     MetricType.DEATHS: 'red',
     MetricType.CASES: 'blue',
     MetricType.RECOVERIES: 'green',
     MetricType.HOSPITALIZATIONS: 'xkcd:purple',
-    MetricType.TESTED: 'xkcd:yellow brown',
+    MetricType.TESTED: 'xkcd:almost black',
+    MetricType.POSITIVITY: 'xkcd:sandy',
 }
 
 METRIC_MOVING_AVERAGE_COLORS = {
@@ -70,7 +77,8 @@ METRIC_MOVING_AVERAGE_COLORS = {
     MetricType.CASES: 'xkcd:pale blue',
     MetricType.RECOVERIES: 'xkcd:pale green',
     MetricType.HOSPITALIZATIONS: 'xkcd:light lavender',
-    MetricType.TESTED: 'xkcd:light tan',
+    MetricType.TESTED: 'xkcd:light grey',
+    MetricType.POSITIVITY: 'xkcd:buff',
 }
 
 @dataclass(frozen=True)
@@ -183,6 +191,7 @@ def plot_stats_by_date(df,
         MetricType.TESTED:           'Tests 7-day Moving Average',
         MetricType.HOSPITALIZATIONS: 'Hospitalization 7-day Moving Average',
         MetricType.RECOVERIES:       'Recoveries 7-day Moving Average',
+        MetricType.POSITIVITY:       'Positivity Rate 7-day Moving Average',
     }
 
     FirstLast = namedtuple('FirstLast', ('first', 'last'))
@@ -292,9 +301,20 @@ def plot_stats_by_date(df,
         # Month_Day gets lost. Recreate it.
         make_month_day_column(df)
     else:
-        df = df.loc[df[COL_REGION] == region]
+        df = df.loc[df[COL_REGION] == region].sort_values(by=[COL_DATE], inplace=False)
 
-    for m in MetricType:
+    if MetricType.POSITIVITY in metrics:
+        # Calculate the positivity rate (cases / tests)
+        df[COL_POSITIVITY] = df[COL_CASES] / df[COL_TESTS]
+
+    all_metrics = {x for x in MetricType}
+    # Skip positivity if not explicitly requested.
+    # Some data sources don't have test values, making
+    # it impossible to calculate.
+    if MetricType.POSITIVITY not in metrics:
+        all_metrics = all_metrics - {MetricType.POSITIVITY}
+
+    for m in all_metrics:
         df_by_date = df.sort_values(by=[COL_DATE], inplace=False)
         maybe_plot_metric(m, ax, df_by_date, first_last, errors)
 
@@ -334,7 +354,8 @@ def plot_stats_by_date(df,
     return None
 
 
-def plot_state(df, source, region, image_file, metrics, moving_average=False, legend_loc=None):
+def plot_state(df, source, region, image_file, metrics, moving_average=False, legend_loc=None,
+               textbox_loc=None):
     """
     Convenience front-end to plot_stats_by_date() that puts a heading for the state
     in the textbox.
@@ -345,6 +366,7 @@ def plot_state(df, source, region, image_file, metrics, moving_average=False, le
                               image_file=image_file, 
                               metrics=metrics,
                               moving_average=moving_average,
+                              textbox_loc=textbox_loc,
                               legend_loc=legend_loc)
 
 
