@@ -176,24 +176,26 @@ def plot_daily_stats(df,
         # Use a sort to make a copy.
         df = df.loc[df[COL_REGION] == region].sort_values(by=[COL_DATE], inplace=False)
 
-    COL_CASES_DIFF = 'cases_diff'
-    COL_CASES_DIFF_MA = 'cases_diff_ma'
+    COL_DIFF = 'diff'
+    COL_DIFF_MA = 'diff_ma'
 
-    df[COL_CASES_DIFF] = df[COL_CASES].diff()
-    df[COL_CASES_DIFF] = df[COL_CASES_DIFF].fillna(0)
+    metric_col = METRIC_COLUMNS[metric]
+    df[COL_DIFF] = df[metric_col].diff()
+    df[COL_DIFF] = df[COL_DIFF].fillna(0)
 
     fig, ax = p.subplots(figsize=(20, 12))
     color = METRIC_COLORS[metric]
-    df.plot(x=COL_MONTH_DAY, y=COL_CASES_DIFF, ax=ax, label='Daily cases', color=color, zorder=2)
+    label = METRIC_LABELS[metric]
+    df.plot(x=COL_MONTH_DAY, y=COL_DIFF, ax=ax, label=f'Daily {label.lower()}', color=color, zorder=2)
     if moving_average:
         color = METRIC_MOVING_AVERAGE_COLORS[metric]
-        df[COL_CASES_DIFF_MA] = df[COL_CASES_DIFF].rolling(7).mean().fillna(0)
-        df.plot(x=COL_MONTH_DAY, y=COL_CASES_DIFF_MA, ax=ax, 
-                label='Daily cases (7-day moving average)', color=color,
+        df[COL_DIFF_MA] = df[COL_DIFF].rolling(7).mean().fillna(0)
+        df.plot(x=COL_MONTH_DAY, y=COL_DIFF_MA, ax=ax, 
+                label=f'Daily {label.lower()} (7-day moving average)', color=color,
                 zorder=1, linewidth=10)
 
     ax.set_xlabel(f'Week\n\n(Source: {source})')
-    ax.set_ylabel('Cases')
+    ax.set_ylabel(f'Daily {label.lower()}')
 
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
