@@ -143,6 +143,64 @@ def fix_pandas_multiplot_legend(ax, legend_loc):
     ax.legend(patches, labels2, loc=legend_loc)
 
 
+def plot_daily_stats(df, 
+                     source, 
+                     metric=MetricType.DEATHS, 
+                     region='United States',
+                     moving_average=False,
+                     figsize=(20, 12),
+                     image_file=None):
+    """
+    Takes a Pandas DataFrame with normalized data, calculate the
+    per-day delta for a metric (which assumes the metric is an
+    accumulating value), and plots it.
+    
+    Parameters:
+    
+    df              - The Pandas DataFrame to plot
+    source          - Description of data source
+    metrics         - A set containing the metrics to plot. Defaults to deaths.
+    region          - The state name, or 'United States' for everything
+    moving_average  - If True, plot a 7-day moving average along side the data. If
+                      False, plot the data as is.
+    figsize         - The size of the plot.
+    image_file      - Name of image file in which to save plot, or None.
+    """
+    if region == 'United States':
+        df = df.groupby(by=COL_DATE).sum().reset_index()
+        df[COL_REGION] = 'United States'
+        # Month_Day gets lost. Recreate it.
+        make_month_day_column(df)
+        df = df.sort_values(by=[COL_DATE], inplace=False)
+    else:
+        # Use a sort to make a copy.
+        df = df.loc[df[COL_REGION] == region].sort_values(by=[COL_DATE], inplace=False)
+
+    COL_CASES_DIFF = 'cases_diff'
+    COL_CASES_DIFF_MA = 'cases_diff_ma'
+
+    df[COL_CASES_DIFF] = df[COL_CASES].diff()
+    df[COL_CASES_DIFF] = df[COL_CASES_DIFF].fillna(0)
+
+    fig, ax = p.subplots(figsize=(20, 12))
+    color = METRIC_COLORS[metric]
+    df.plot(x=COL_MONTH_DAY, y=COL_CASES_DIFF, ax=ax, label='Daily cases', color=color, zorder=2)
+    if moving_average:
+        color = METRIC_MOVING_AVERAGE_COLORS[metric]
+        df[COL_CASES_DIFF_MA] = df[COL_CASES_DIFF].rolling(7).mean().fillna(0)
+        df.plot(x=COL_MONTH_DAY, y=COL_CASES_DIFF_MA, ax=ax, 
+                label='Daily cases (7-day moving average)', color=color,
+                zorder=1, linewidth=10)
+
+    ax.set_xlabel(f'Week\n\n(Source: {source})')
+    ax.set_ylabel('Cases')
+
+    if image_file is not None:
+        fig.savefig(os.path.join(IMAGES_PATH, image_file))
+
+    return fig, ax
+
+
 def plot_stats_by_date(df, 
                        source,
                        metrics={MetricType.DEATHS}, 
@@ -300,7 +358,9 @@ def plot_stats_by_date(df,
         df[COL_REGION] = 'United States'
         # Month_Day gets lost. Recreate it.
         make_month_day_column(df)
+        df = df.sort_values(by=[COL_DATE], inplace=False)
     else:
+        # Use a sort to make a copy.
         df = df.loc[df[COL_REGION] == region].sort_values(by=[COL_DATE], inplace=False)
 
     if MetricType.POSITIVITY in metrics:
