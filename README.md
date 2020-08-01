@@ -1,10 +1,10 @@
 # COVID-19 notebooks
 
-This repo contains [Jupyter](https://jupyter.org/) notebooks that I use to
+This repository contains [Jupyter](https://jupyter.org/) notebooks that I use to
 analyze some COVID-19 data. You're welcome to play with these notebooks, adapt 
 them, copy them, etc. 
 
-This repo is main just a playground allowing me to experiment with the data,
+This repository is mainly just a playground allowing me to experiment with the data,
 as well as  bone up on Jupyter, [`matplotlib`](https://matplotlib.org/), and
 [Pandas](https://pandas.pydata.org/). 
 
