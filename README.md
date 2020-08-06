@@ -85,16 +85,15 @@ That command line:
 
 ### Data Sources
 
-The notebooks currently use data from these data sources:
+The notebooks currently use data from these data sources. Data sources
+marked with &#x2020; can be downloaded via `./upload-data.sh`.
 
-Data sources:
-
-- [CDC Provisional Death Counts for Coronavirus Disease](https://www.cdc.gov/nchs/nvss/vsrr/covid19/index.htm).
+- [CDC Provisional Death Counts for Coronavirus Disease](https://www.cdc.gov/nchs/nvss/vsrr/covid19/index.htm).&#x2020;
   Before running the CDC notebook, the data file (see tree, below) must be downloaded from the CDC link 
   and copied into the appropriate data location.
-- [Johns Hopkins University's Center for Systems Science and Engineering (CSSE) COVID-19 data repository](https://github.com/CSSEGISandData/COVID-19).
+- [Johns Hopkins University's Center for Systems Science and Engineering (CSSE) COVID-19 data repository](https://github.com/CSSEGISandData/COVID-19).&#x2020;
   Before running the Johns Hopkins notebook, the linked GitHub repository must be cloned under `data/johns-hopkins`.
-- [Data from The New York Times, based on reports from state and local health agencies](https://github.com/nytimes/covid-19-data)
+- [Data from The New York Times, based on reports from state and local health agencies](https://github.com/nytimes/covid-19-data).&#x2020;
   Before running the New York Times notebook, the linked GitHub repository must be cloned under `data/nytimes`.
 - [State FIPS codes](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696) from the USDA. Stored in `data/states-fips.csv` and
   checked into this repository.
