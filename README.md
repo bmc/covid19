@@ -20,11 +20,11 @@ display only.)
 
 ### Notebooks
 
-- `cdc.ipynb`: Notebook that analyzes data from the Centers for Disease
-  Control and Prevention
 - `johns-hopkins.ipynb`: Notebook that analyzes data from the Johns Hopkins
   University's Center for Systems Science and Engineering (CSSE)
 - `nytimes.ipynb`: Notebook that analyzes data from the New York Times
+- `cdc.ipynb`: Notebook that analyzes data from the Centers for Disease
+  Control and Prevention. Less useful than the other two sources.
 - `update-data.ipynb`: Notebook that can be used to download updated data.
   See below for details.
 
