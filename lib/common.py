@@ -7,13 +7,15 @@ import numpy as np
 import pandas as pd
 import os
 from datetime import datetime, timedelta, date
-from typing import Dict, Sequence, Tuple, Union
+from typing import Dict, Sequence, Tuple, Union, NoReturn
 from dataclasses import dataclass
 import math
 import csv
 from enum import Enum
 import re
 from collections import namedtuple
+from IPython.core.magic import (register_line_magic, register_cell_magic)
+
 
 IMAGES_PATH = 'images'
 
@@ -94,7 +96,25 @@ class StateCountyInfo:
     county_name: str
     fips_code: str
 
-def make_month_day_column(df):
+
+@register_line_magic
+def head(path: str, n: int=10, encoding: str='utf-8') -> NoReturn:
+    """
+    Convenience routine kind of like the Unix head(1)
+    command: Opens a file (presumed to be text) and displays
+    the first N lines of it to standard output.
+    
+    You can also call this function as %head, but only the
+    first argument (the file name) is honored in that case.
+    """
+    with open(path, mode='r', encoding=encoding) as f:
+        for i, line in enumerate(f.readlines()):
+            if i >= n:
+                break
+            print(line, end="")
+
+
+def make_month_day_column(df: pd.DataFrame):
     """
     Take a Pandas DataFrame containing normalized
     COVID-19 data, and create the month-day colun.
