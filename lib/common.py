@@ -3,6 +3,7 @@ Share library of constants and functions that
 can be used across notebooks.
 """
 import matplotlib.pyplot as p
+import matplotlib
 import numpy as np
 import pandas as pd
 import os
@@ -127,7 +128,7 @@ def make_month_day_column(df: pd.DataFrame):
     df[COL_MONTH_DAY] = df[COL_DATE].dt.strftime('%m/%d')
 
 
-def date_to_datetime(date, hour=0, minute=0, second=0):
+def date_to_datetime(date: date, hour: int = 0, minute: int = 0, second: int = 0) -> datetime:
     """
     Converts a Python date object to a datetime object,
     adding the specified hour, minute, and second.
@@ -137,7 +138,7 @@ def date_to_datetime(date, hour=0, minute=0, second=0):
                     hour=hour, minute=minute, second=second)
 
 
-def datestr(d: datetime.date, include_year: bool=False) -> str:
+def datestr(d: date, include_year: bool = False) -> str:
     """
     Format a date in a consistent fashion.
     """
@@ -145,7 +146,8 @@ def datestr(d: datetime.date, include_year: bool=False) -> str:
     return datetime.strftime(d, pat)
 
 
-def textbox(ax, x, y, contents, fontsize=12, boxstyle='round', bg='xkcd:pale green'):
+def textbox(ax: matplotlib.axes.Axes, x: Union[int, float], y: Union[int, float], 
+            contents: str, fontsize: int = 12, boxstyle: str = 'round', bg: str = 'xkcd:pale green'):
     """
     Place text in a box on a plot.
     

@@ -2,11 +2,14 @@
 Plotting helpers.
 """
 import matplotlib.pyplot as p
+import matplotlib
 import numpy as np
 import pandas as pd
+from typing import Tuple, Sequence, Optional, Union, Set, Dict
 from lib.common import *
 
-def fix_pandas_multiplot_legend(ax, legend_loc):
+def fix_pandas_multiplot_legend(ax:         matplotlib.axes.Axes, 
+                                legend_loc: Tuple[Union[int, float], Union[int, float]]):
     """
     When plotting multiple pieces of data, the Pandas-generated
     plot legend will often look like "(metric, place)" (e.g.,
@@ -17,7 +20,7 @@ def fix_pandas_multiplot_legend(ax, legend_loc):
     Parameters:
     
     ax         - the plot axis
-    legend_loc - the desired location for the legend
+    legend_loc - the desired location for the legend, as a tuple
     """
     patches, labels = ax.get_legend_handles_labels()
     pat = re.compile(r'^\([^,\s]+,\s+(.*)\)$')
@@ -29,13 +32,13 @@ def fix_pandas_multiplot_legend(ax, legend_loc):
     ax.legend(patches, labels2, loc=legend_loc)
 
 
-def plot_daily_stats(df, 
-                     source, 
-                     metric=MetricType.DEATHS, 
-                     region='United States',
-                     moving_average=False,
-                     figsize=(20, 12),
-                     image_file=None):
+def plot_daily_stats(df:             pd.DataFrame, 
+                     source:         str, 
+                     metric:         MetricType = MetricType.DEATHS, 
+                     region:         str = 'United States',
+                     moving_average: bool = False,
+                     figsize:        Tuple[Union[int, float], Union[int, float]] = (20, 12),
+                     image_file:     Optional[str] = None):
     """
     Takes a Pandas DataFrame with normalized data, calculate the
     per-day delta for a metric (which assumes the metric is an
@@ -89,19 +92,19 @@ def plot_daily_stats(df,
     return fig, ax
 
 
-def plot_stats_by_date(df, 
-                       source,
-                       metrics={MetricType.DEATHS}, 
-                       region='United States',
-                       moving_average=False,
-                       per_n=1, 
-                       populations=None,
-                       textbox_heading=None, 
-                       textbox_loc=None, 
-                       marker=None, 
-                       figsize=(20, 12), 
-                       image_file=None,
-                       legend_loc=None):
+def plot_stats_by_date(df:              pd.DataFrame, 
+                       source:          str,
+                       metrics:         Set[MetricType] = {MetricType.DEATHS}, 
+                       region:          str = 'United States',
+                       moving_average:  bool = False,
+                       per_n:           int = 1, 
+                       populations:     Dict[str, int] = None,
+                       textbox_heading: Optional[str] = None, 
+                       textbox_loc:     Optional[Tuple[Union[int, float], Union[int, float]]] = None, 
+                       marker:          Optional[str] = None, 
+                       figsize:         Tuple[Union[int, float], Union[int, float]] = (20, 12), 
+                       image_file:      Optional[str] = None,
+                       legend_loc:      Optional[str] = None):
     """
     Takes a Pandas DataFrame with normalized data, groups the data by
     the month-day column and sums up the values for all metrics. Then,
@@ -302,8 +305,14 @@ def plot_stats_by_date(df,
     return (fig, ax)
 
 
-def plot_state(df, source, region, metrics, image_file=None,
-               moving_average=False, legend_loc=None, textbox_loc=None):
+def plot_state(df:             pd.DataFrame,
+               source:         str,
+               region:         str,
+               metrics:        Set[MetricType],
+               image_file:     Optional[str] = None,
+               moving_average: bool = False,
+               legend_loc:     Optional[str] = None, 
+               textbox_loc:    Optional[Tuple[Union[int, float], Union[int, float]]] = None):
     """
     Convenience front-end to plot_stats_by_date() that puts a heading for the state
     in the textbox.
@@ -318,9 +327,17 @@ def plot_state(df, source, region, metrics, image_file=None,
                               legend_loc=legend_loc)
 
 
-def plot_states(df, source, states, metric=MetricType.DEATHS, per_n=1,
-                populations=None, textbox_heading=None, textbox_loc=None, 
-                figsize=(20, 12), legend_loc="lower right", image_file=None):
+def plot_states(df:              pd.DataFrame,
+                source:          str,
+                states:          Sequence[str],
+                metric:          MetricType = MetricType.DEATHS,
+                per_n:           int = 1,
+                populations:     Dict[str, int] = None,
+                textbox_heading: Optional[str] = None,
+                textbox_loc:     Optional[Tuple[Union[int, float], Union[int, float]]] = None, 
+                figsize:         Tuple[Union[int, float], Union[int, float]] = (20, 12),
+                legend_loc:      str = "lower right",
+                image_file:      Optional[str] = None):
     """
     Takes a Pandas DataFrame with the normalized data, and plots a particular
     metric once for each of a group of states, across all the dates in the
@@ -394,9 +411,14 @@ def plot_states(df, source, states, metric=MetricType.DEATHS, per_n=1,
     return (fig, ax)
 
 
-def plot_states_per_capita(df, source, populations, metric=MetricType.DEATHS,
-                           figsize=(25, 12), show_us_per_capita=True,
-                           per_n=1_000_000, image_file=None):
+def plot_states_per_capita(df:                 pd.DataFrame,
+                           source:             str,
+                           populations:        Dict[str, int], 
+                           metric:             MetricType = MetricType.DEATHS,
+                           figsize:            Tuple[Union[int, float], Union[float, int]] = (25, 12),
+                           show_us_per_capita: bool = True,
+                           per_n:              int = 1_000_000,
+                           image_file:         Optional[str] = None):
     """
     Plot a per-capita bar chart comparing all states, for a particular
     metric.
@@ -467,9 +489,17 @@ def plot_states_per_capita(df, source, populations, metric=MetricType.DEATHS,
 
 
 
-def plot_counties(df, state, counties, source, metric=MetricType.DEATHS, image_file=None, 
-                  textbox_loc=(0.01, 0.98), textbox_heading=None, moving_average=False,
-                  figsize=(20, 11), legend_loc='upper center'):
+def plot_counties(df:              pd.DataFrame,
+                  state:           str, 
+                  counties:        Sequence[str],
+                  source:          str,
+                  metric:          MetricType = MetricType.DEATHS,
+                  image_file:      Optional[str] = None,
+                  textbox_loc:     Tuple[Union[int, float], Union[int, float]] = (0.01, 0.98),
+                  textbox_heading: Optional[str] = None,
+                  moving_average:  bool = False,
+                  figsize:         Tuple[Union[int, float], Union[int, float]] = (20, 11),
+                  legend_loc:      str = 'upper center'):
     """
     Plot a set of counties for a particular state. This data is New York Time-specific.
     
@@ -539,7 +569,13 @@ def plot_counties(df, state, counties, source, metric=MetricType.DEATHS, image_f
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
 
 
-def plot_county_daily_stats(df, state, county, source, metric, textbox_loc=None, image_file=None):
+def plot_county_daily_stats(df:          pd.DataFrame,
+                            state:       str, 
+                            county:      str,
+                            source:      str,
+                            metric:      MetricType,
+                            textbox_loc: Optional[Tuple[Union[int, float], Union[int, float]]] = None,
+                            image_file:  Optional[str] = None):
     """
     Plot day-by-day stats for a particular county.
     
