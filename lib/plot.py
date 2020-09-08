@@ -54,6 +54,10 @@ def plot_daily_stats(df:             pd.DataFrame,
                       False, plot the data as is.
     figsize         - The size of the plot.
     image_file      - Name of image file in which to save plot, or None.
+    
+    Returns:
+      A 3-tuple containing (fig, axis, dataframe), where "dataframe" is the
+      region-specific Pandas data frame with deltas for the specific metric.
     """
     if region == 'United States':
         df = df.groupby(by=COL_DATE).sum().reset_index()
@@ -89,7 +93,7 @@ def plot_daily_stats(df:             pd.DataFrame,
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
 
-    return fig, ax
+    return (fig, ax, df)
 
 
 def plot_stats_by_date(df:              pd.DataFrame, 
