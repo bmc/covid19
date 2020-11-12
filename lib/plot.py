@@ -5,6 +5,7 @@ import matplotlib.pyplot as p
 import matplotlib
 import numpy as np
 import pandas as pd
+from math import inf
 from typing import Tuple, Sequence, Optional, Union, Set, Dict
 from lib.common import *
 
@@ -175,8 +176,11 @@ def plot_stats_by_date(df:              pd.DataFrame,
 
         handle_per_capita(df, col)
 
-        first_value = int(round(df[col].iloc[0]))
-        last_value = int(round(df[col].iloc[-1]))
+        def to_int(value):
+            return 0 if value == inf else int(round(value))
+
+        first_value = to_int(df[col].iloc[0])
+        last_value = to_int(df[col].iloc[-1])
         first_last[m] = FirstLast(first=first_value, last=last_value)
 
         if m not in metrics:
@@ -185,7 +189,7 @@ def plot_stats_by_date(df:              pd.DataFrame,
         # Since these values are cumulative, if the last value is 0, we
         # can't trust the data.
         last_val = df[col].iloc[-1]
-        if last_val <= 0:
+        if (last_val <= 0) or (last_val == inf):
             errors.append(f"No data for {METRIC_LABELS[m]} in this data set.")
             return
 
