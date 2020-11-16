@@ -89,7 +89,7 @@ def plot_daily_stats(df:             pd.DataFrame,
                 zorder=1, linewidth=10)
 
     ax.set_xlabel(f'Week\n\n(Source: {source})')
-    ax.set_ylabel(f'Daily {label.lower()}')
+    ax.set_ylabel(f'Daily {label.lower()}, {region}')
 
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
@@ -611,7 +611,7 @@ def plot_county_daily_stats(df:          pd.DataFrame,
             zorder=0, color=METRIC_MOVING_AVERAGE_COLORS[metric], linewidth=10)
 
     ax.set_xlabel(f'Week\n\n(Source: {source})')
-    ax.set_ylabel(f'Daily {metric_label}')
+    ax.set_ylabel(f'Daily {metric_label}, {county} County, {state}')
     text_x, text_y = textbox_loc or (0.01, 0.99)
     textbox(ax=ax, x=text_x, y=text_y, contents=f'{county} County, {state}')
 
