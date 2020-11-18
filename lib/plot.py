@@ -9,6 +9,29 @@ from math import inf
 from typing import Tuple, Sequence, Optional, Union, Set, Dict
 from lib.common import *
 
+def textbox(ax: matplotlib.axes.Axes, x: Union[int, float], y: Union[int, float], 
+            contents: str, fontsize: int = 12, boxstyle: str = 'round', bg: str = 'xkcd:pale green'):
+    """
+    Place text in a box on a plot.
+    
+    Note on coordinates: (0, 0) is lower left. (1, 1) is upper right. Floats are allowed.
+    The coordinates refer to the upper left corner of the text box. A good starting pair
+    is (0.01, 0.98)
+    
+    Parameters:
+    
+    ax        - The plot
+    x         - The X location for the box.
+    y         - The Y location for the box.
+    contents  - The text. Can be multiline.
+    fontsize  - The size of the text font. Defaults to 12.
+    boxstyle  - The style of the box. Defaults to 'round'.
+    bg        - The background color. Defaults to pale green.    
+    """
+    props = {'boxstyle': boxstyle, 'facecolor': bg, 'alpha': 0.3}
+    ax.text(x, y, contents, transform=ax.transAxes, fontsize=fontsize, bbox=props, va='top', ha='left')
+    
+
 def fix_pandas_multiplot_legend(ax:         matplotlib.axes.Axes, 
                                 legend_loc: Tuple[Union[int, float], Union[int, float]]):
     """
@@ -33,13 +56,15 @@ def fix_pandas_multiplot_legend(ax:         matplotlib.axes.Axes,
     ax.legend(patches, labels2, loc=legend_loc)
 
 
-def plot_daily_stats(df:             pd.DataFrame, 
-                     source:         str, 
-                     metric:         MetricType = MetricType.DEATHS, 
-                     region:         str = 'United States',
-                     moving_average: bool = False,
-                     figsize:        Tuple[Union[int, float], Union[int, float]] = (20, 12),
-                     image_file:     Optional[str] = None):
+def plot_daily_stats(df:              pd.DataFrame, 
+                     source:          str, 
+                     metric:          MetricType = MetricType.DEATHS, 
+                     region:          str = 'United States',
+                     moving_average:  bool = False,
+                     figsize:         Tuple[Union[int, float], Union[int, float]] = (20, 12),
+                     image_file:      Optional[str] = None,
+                     bar_chart_color: str = 'xkcd:light grey',
+                     textbox_loc:     Optional[Tuple[Union[int, float], Union[int, float]]] = None,):
     """
     Takes a Pandas DataFrame with normalized data, calculate the
     per-day delta for a metric (which assumes the metric is an
@@ -55,6 +80,11 @@ def plot_daily_stats(df:             pd.DataFrame,
                       False, plot the data as is.
     figsize         - The size of the plot.
     image_file      - Name of image file in which to save plot, or None.
+    bar_chart_color - If a moving average is plotted, the daily stats
+                      are plotted as a bar chart, instead of a line.
+                      In that case, this parameter specifies the color.
+    textbox_loc:      Tuple defining location of text box. Defaults
+                      to (0.01, 0.99)
     
     Returns:
       A 3-tuple containing (fig, axis, dataframe), where "dataframe" is the
@@ -80,16 +110,30 @@ def plot_daily_stats(df:             pd.DataFrame,
     fig, ax = p.subplots(figsize=(20, 12))
     color = METRIC_COLORS[metric]
     label = METRIC_LABELS[metric]
-    df.plot(x=COL_MONTH_DAY, y=COL_DIFF, ax=ax, label=f'Daily {label.lower()}', color=color, zorder=2)
-    if moving_average:
-        color = METRIC_MOVING_AVERAGE_COLORS[metric]
+
+    if not moving_average:
+        df.plot(x=COL_MONTH_DAY, y=COL_DIFF, ax=ax, label=f'Daily {label.lower()}', color=color)
+
+    else:
+        df.plot.bar(x=COL_MONTH_DAY, y=COL_DIFF, ax=ax, label=f'Daily {label.lower()}', color=bar_chart_color, zorder=1)
+        # Show every 10th date
+        ax.set_xticks(ax.get_xticks()[::10]) 
+        # Instead of using the moving average color here,
+        # use the regular metric color for the moving average.
+        # In general, they're darker.
+        #color = METRIC_MOVING_AVERAGE_COLORS[metric]
         df[COL_DIFF_MA] = df[COL_DIFF].rolling(7).mean().fillna(0)
         df.plot(x=COL_MONTH_DAY, y=COL_DIFF_MA, ax=ax, 
                 label=f'Daily {label.lower()} (7-day moving average)', color=color,
-                zorder=1, linewidth=10)
+                zorder=2)
+        text_x, text_y = textbox_loc or (0.01, 0.98)
+        textbox(ax, text_x, text_y,
+                'Bar chart represents daily values.\n'
+                'Line represents 7-day moving average.')
 
     ax.set_xlabel(f'Week\n\n(Source: {source})')
     ax.set_ylabel(f'Daily {label.lower()}, {region}')
+    ax.get_legend().remove()
 
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))
@@ -602,18 +646,25 @@ def plot_county_daily_stats(df:          pd.DataFrame,
     metric_col = METRIC_COLUMNS[metric]
     metric_label = METRIC_LABELS[metric]
     df['diff'] = df[metric_col].diff().fillna(0)
+    df[df['diff'] < 0] = 0
     df['diff_ma'] = df['diff'].rolling(7).mean().fillna(0)
 
     fig, ax = p.subplots(figsize=(20, 12))
-    df.plot(x=COL_MONTH_DAY, y='diff', ax=ax, label=f'daily {metric_label.lower()}', 
-            zorder=1, color=METRIC_COLORS[metric])
+    df.plot.bar(x=COL_MONTH_DAY, y='diff', ax=ax, label=f'daily {metric_label.lower()}', 
+                zorder=0, color='xkcd:light grey')
     df.plot(x=COL_MONTH_DAY, y='diff_ma', ax=ax, label='7-day moving average', 
-            zorder=0, color=METRIC_MOVING_AVERAGE_COLORS[metric], linewidth=10)
+            zorder=1, color=METRIC_COLORS[metric])
 
     ax.set_xlabel(f'Week\n\n(Source: {source})')
     ax.set_ylabel(f'Daily {metric_label}, {county} County, {state}')
-    text_x, text_y = textbox_loc or (0.01, 0.99)
-    textbox(ax=ax, x=text_x, y=text_y, contents=f'{county} County, {state}')
+    ax.set_xticks(ax.get_xticks()[::10])
+    text_x, text_y = textbox_loc or (0.01, 0.98)
+    text = f'''{county} County, {state}
+
+Bar chart represents daily values.
+Line represents 7-day moving average.'''
+    textbox(ax=ax, x=text_x, y=text_y, contents=text)
+    ax.get_legend().remove()
 
     if image_file is not None:
         fig.savefig(os.path.join(IMAGES_PATH, image_file))

@@ -146,29 +146,6 @@ def datestr(d: date, include_year: bool = False) -> str:
     return datetime.strftime(d, pat)
 
 
-def textbox(ax: matplotlib.axes.Axes, x: Union[int, float], y: Union[int, float], 
-            contents: str, fontsize: int = 12, boxstyle: str = 'round', bg: str = 'xkcd:pale green'):
-    """
-    Place text in a box on a plot.
-    
-    Note on coordinates: (0, 0) is lower left. (1, 1) is upper right. Floats are allowed.
-    The coordinates refer to the upper left corner of the text box. A good starting pair
-    is (0.01, 0.98)
-    
-    Parameters:
-    
-    ax        - The plot
-    x         - The X location for the box.
-    y         - The Y location for the box.
-    contents  - The text. Can be multiline.
-    fontsize  - The size of the text font. Defaults to 12.
-    boxstyle  - The style of the box. Defaults to 'round'.
-    bg        - The background color. Defaults to pale green.    
-    """
-    props = {'boxstyle': boxstyle, 'facecolor': bg, 'alpha': 0.3}
-    ax.text(x, y, contents, transform=ax.transAxes, fontsize=fontsize, bbox=props, va='top', ha='left')
-    
-
 def csv_int_field(row: Dict[str, str], key: str) -> int:
     """
     Get an integer value from a csv.DictReader row. If the value
